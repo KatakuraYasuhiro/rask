@@ -9,7 +9,18 @@ class Task < ApplicationRecord
   belongs_to :state, foreign_key: 'task_state_id', class_name: 'TaskState'
 
   def show_days_ago
-    day = ((self.created_at - Time.zone.now)/60/60/24).abs.round.to_s
-    day + "日前"
+    ((Time.zone.now - self.created_at)/60/60/24).round
   end
+  def days_to_deadline
+    ((self.due_at - Time.zone.now)/60/60/24).round
+  end
+
+  def overdue?
+    Time.zone.now.before?(self.due_at)
+  end
+
+  def completed?
+    self.state.name == "done"
+  end
+
 end
